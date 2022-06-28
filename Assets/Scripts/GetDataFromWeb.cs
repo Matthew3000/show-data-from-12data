@@ -4,14 +4,13 @@ using UnityEngine;
 using UnityEngine.Networking;
 using SimpleJSON;
 
-
 public class GetDataFromWeb : MonoBehaviour
 {
     private const string twelveDataUrl = "https://api.twelvedata.com/time_series?";
-    //hardcoding all attributes because not specified otherwise in a task
+    //hardcoding all the attributes because not specified otherwise in a task
     private const string apiKey = "apikey=cb2ddf16991d4fd1bff11908d5514dd3";
     private string interval = "interval=1min";
-    private string outputSize = "outputsize=5";
+    private string outputSize = "outputsize=2";
     private string format = "format=JSON";
     private string timezone = "timezone=Europe/Moscow";
     private string startDate;
@@ -20,20 +19,26 @@ public class GetDataFromWeb : MonoBehaviour
     private string request;
     [SerializeField] private GameObject CsvComposer;
 
-
     public void GetData()
     {
+        //GetData method starts the whole process
         ComposeUrl();
         StartCoroutine(getRequest(request));
     }
 
     void ComposeUrl()
     {
-        //start and for request
+        //ComposeUrl method composes the request url
+        //clearing previous request. The request is always made as a whole from scratch in order
+        //to make possible following modication such as customizable in runtime attributes
+        request = "";
+
+        //start date for the request
         DateTime requestTime = DateTime.Now;
         startDate = "start_date=" + requestTime.ToString("yyyy-MM-dd HH") + ":" + (Convert.ToInt32(requestTime.ToString("mm")) - 2) + ":00";
 
-        //concat tickers
+        //concat tickers. Again starting from scratch
+        tickersTosend = "symbol=";
         for (int i = 0; i < tickers.Length; i++)
         {
             if (i != 0 && !string.IsNullOrWhiteSpace(tickers[i]))
@@ -57,11 +62,9 @@ public class GetDataFromWeb : MonoBehaviour
         else
         {
             Debug.Log("Received: " + uwr.downloadHandler.text);
-
+            //Parsing response and writing to csv
             JSONNode stockData = JSON.Parse(uwr.downloadHandler.text);
-            if (!stockData["code"]) {
-                CsvComposer.GetComponent<CsvComposer>().WriteToCSV(stockData, tickers);
-            }
+            CsvComposer.GetComponent<CsvComposer>().WriteToCSV(stockData, tickers);
         }
     }
 }
