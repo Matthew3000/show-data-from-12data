@@ -29,9 +29,9 @@ public class GetDataFromWeb : MonoBehaviour
 
     void ComposeUrl()
     {
-        //start date for request
+        //start and for request
         DateTime requestTime = DateTime.Now;
-        startDate = requestTime.ToString("MM-dd-yyyy") + "%" + requestTime.ToString("HH") + ":" + (Convert.ToInt32(requestTime.ToString("mm")) - 1) + ":00";
+        startDate = "start_date=" + requestTime.ToString("yyyy-MM-dd HH") + ":" + (Convert.ToInt32(requestTime.ToString("mm")) - 2) + ":00";
 
         //concat tickers
         for (int i = 0; i < tickers.Length; i++)
