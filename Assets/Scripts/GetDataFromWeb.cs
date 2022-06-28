@@ -23,7 +23,6 @@ public class GetDataFromWeb : MonoBehaviour
     {
         ComposeUrl();
         StartCoroutine(getRequest(request));
-        //StartCoroutine(getRequest("https://api.twelvedata.com/time_series?symbol=AAPL,EUR/USD,ETH/BTC:Huobi,TRP:TSX&interval=1min&apikey=cb2ddf16991d4fd1bff11908d5514dd3&outputsize=5&start_date=2022-06-28%2016:40:00&format=JSON&timezone=Europe/Moscow"));
     }
 
     void ComposeUrl()
@@ -41,9 +40,7 @@ public class GetDataFromWeb : MonoBehaviour
                 tickersTosend += tickers[i];
         }
 
-
-        //timezone
-        request = twelveDataUrl + tickersTosend + "&" + apiKey + "&" + interval + "&" + outputSize + "&" + timezone + "&" + startDate + "&" + tickersTosend;
+        request = twelveDataUrl + tickersTosend + "&" + apiKey + "&" + interval + "&" + outputSize + "&" + timezone + "&" + startDate + "&" + tickersTosend + "&" + format;
         Debug.Log(request);
     }
     IEnumerator getRequest(string url)
