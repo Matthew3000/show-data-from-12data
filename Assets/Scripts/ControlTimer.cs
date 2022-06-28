@@ -4,8 +4,8 @@ using UnityEngine;
 public class ControlTimer : MonoBehaviour
 {
     [SerializeField] private GameObject GetDataObj;
-    public bool goForData = false;
-    public bool stopData = false;
+    public bool goForData;
+    public bool stopData;
 
     private void Update()
     {
