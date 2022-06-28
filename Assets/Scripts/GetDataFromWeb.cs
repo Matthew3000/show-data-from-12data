@@ -18,6 +18,8 @@ public class GetDataFromWeb : MonoBehaviour
     [SerializeField] private string[] tickers = new string[5];
     private string tickersTosend = "symbol=";
     private string request;
+    [SerializeField] private GameObject CsvComposer;
+
 
     public void GetData()
     {
@@ -57,8 +59,9 @@ public class GetDataFromWeb : MonoBehaviour
             Debug.Log("Received: " + uwr.downloadHandler.text);
 
             JSONNode stockData = JSON.Parse(uwr.downloadHandler.text);
-
-            Debug.Log(stockData["AAPL"]["meta"]["currency"]);
+            if (!stockData["code"]) {
+                CsvComposer.GetComponent<CsvComposer>().WriteToCSV(stockData, tickers);
+            }
         }
     }
 }
