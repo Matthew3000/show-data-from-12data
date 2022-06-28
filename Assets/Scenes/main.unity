@@ -370,6 +370,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4253a8ff67d70744082f6f9b832f54a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tickers:
+  - AAPL
+  - EUR/USD
+  - ETH/BTC:Huobi
+  - TRP:TSX
+  - QQQ
 --- !u!4 &366356690
 Transform:
   m_ObjectHideFlags: 0
@@ -415,6 +421,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GetDataObj: {fileID: 366356688}
+  goForData: 1
+  stopData: 0
 --- !u!4 &566699670
 Transform:
   m_ObjectHideFlags: 0

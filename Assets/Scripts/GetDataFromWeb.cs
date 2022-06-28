@@ -7,23 +7,44 @@ using SimpleJSON;
 
 public class GetDataFromWeb : MonoBehaviour
 {
-    private const string twelveDataUrl = "https://api.twelvedata.com/time_series";
-    private const string keys = "?symbol=AAPL,EUR/USD,ETH/BTC:Huobi,TRP:TSX&interval=1min&apikey=cb2ddf16991d4fd1bff11908d5514dd3&outputsize=5&start_date=2022-06-23%2016:40:00&format=JSON&end_date=2022-06-23%2016:40:00&timezone=Europe/Moscow";
-    private string timezone;
+    private const string twelveDataUrl = "https://api.twelvedata.com/time_series?";
+    //hardcoding all attributes because not specified otherwise in a task
+    private const string apiKey = "apikey=cb2ddf16991d4fd1bff11908d5514dd3";
+    private string interval = "interval=1min";
+    private string outputSize = "outputsize=5";
+    private string format = "format=JSON";
+    private string timezone = "timezone=Europe/Moscow";
     private string startDate;
-    private string endDate;
-    private string[] tickers = new string[5];
-
+    [SerializeField] private string[] tickers = new string[5];
+    private string tickersTosend = "symbol=";
+    private string request;
 
     public void GetData()
     {
         ComposeUrl();
-        StartCoroutine(getRequest("https://api.twelvedata.com/time_series?symbol=AAPL,EUR/USD,ETH/BTC:Huobi,TRP:TSX&interval=1min&apikey=cb2ddf16991d4fd1bff11908d5514dd3&outputsize=5&start_date=2022-06-23%2016:40:00&format=JSON&end_date=2022-06-23%2016:40:00&timezone=Europe/Moscow"));
+        StartCoroutine(getRequest(request));
+        //StartCoroutine(getRequest("https://api.twelvedata.com/time_series?symbol=AAPL,EUR/USD,ETH/BTC:Huobi,TRP:TSX&interval=1min&apikey=cb2ddf16991d4fd1bff11908d5514dd3&outputsize=5&start_date=2022-06-28%2016:40:00&format=JSON&timezone=Europe/Moscow"));
     }
 
     void ComposeUrl()
     {
+        //start date for request
+        DateTime requestTime = DateTime.Now;
+        startDate = requestTime.ToString("MM-dd-yyyy") + "%" + requestTime.ToString("HH") + ":" + (Convert.ToInt32(requestTime.ToString("mm")) - 1) + ":00";
 
+        //concat tickers
+        for (int i = 0; i < tickers.Length; i++)
+        {
+            if (i != 0 && !string.IsNullOrWhiteSpace(tickers[i]))
+                tickersTosend += ",";
+            if (!string.IsNullOrWhiteSpace(tickers[i]))
+                tickersTosend += tickers[i];
+        }
+
+
+        //timezone
+        request = twelveDataUrl + tickersTosend + "&" + apiKey + "&" + interval + "&" + outputSize + "&" + timezone + "&" + startDate + "&" + tickersTosend;
+        Debug.Log(request);
     }
     IEnumerator getRequest(string url)
     {
