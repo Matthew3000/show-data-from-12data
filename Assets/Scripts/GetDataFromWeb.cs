@@ -18,6 +18,7 @@ public class GetDataFromWeb : MonoBehaviour
     private string tickersTosend = "symbol=";
     private string request;
     [SerializeField] private GameObject CsvComposer;
+    [SerializeField] private GameObject Logger;
 
     public void GetData()
     {
@@ -35,7 +36,7 @@ public class GetDataFromWeb : MonoBehaviour
 
         //start date for the request
         DateTime requestTime = DateTime.Now;
-        startDate = "start_date=" + requestTime.ToString("yyyy-MM-dd HH") + ":" + (Convert.ToInt32(requestTime.ToString("mm")) - 2) + ":00";
+        startDate = "start_date=" + requestTime.ToString("yyyy-MM-dd HH") + ":" + (Convert.ToInt32(requestTime.ToString("mm")) - 3) + ":00";
 
         //concat tickers. Again starting from scratch
         tickersTosend = "symbol=";
@@ -55,13 +56,17 @@ public class GetDataFromWeb : MonoBehaviour
         UnityWebRequest uwr = UnityWebRequest.Get(url);
         yield return uwr.SendWebRequest();
 
-        if (uwr.result == UnityWebRequest.Result.ConnectionError)
+        if (uwr.result == UnityWebRequest.Result.ConnectionError || uwr.result == UnityWebRequest.Result.DataProcessingError)
         {
             Debug.Log("Error While Sending: " + uwr.error);
+            string text = "Error While Sending: " + uwr.error;
+            Logger.GetComponent<Logger>().LogText(text, true);
         }
         else
         {
             Debug.Log("Received: " + uwr.downloadHandler.text);
+            string text = "Succesfully recieved data";
+            Logger.GetComponent<Logger>().LogText(text, true);
             //Parsing response and writing to csv
             JSONNode stockData = JSON.Parse(uwr.downloadHandler.text);
             CsvComposer.GetComponent<CsvComposer>().WriteToCSV(stockData, tickers);

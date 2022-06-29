@@ -1,13 +1,12 @@
 using SimpleJSON;
 using System;
 using System.IO;
-using TMPro;
 using UnityEngine;
 
 public class CsvComposer : MonoBehaviour
 {
     private string filename;
-    [SerializeField] private GameObject textWindow;
+    [SerializeField] private GameObject Logger;
     void Start()
     {
         CreateCSV();
@@ -43,14 +42,18 @@ public class CsvComposer : MonoBehaviour
                             float value = stockData[tickers[i]]["values"][0]["close"];
                             float prevValue = stockData[tickers[i]]["values"][1]["close"];
                             float change = value - prevValue;
-                            textWindow.GetComponent<TMP_Text>().text += "succesfuly written data for " + tickers[i] + " at " + dateTime + "\n";
+                            Debug.Log(change + "=" + value + "-" + prevValue);
                             tw.WriteLine(dateTime + "," + tickers[i] + ",\"" + value + "\",\"" + change + "\"");
+                            string text = "succesfuly written data for " + tickers[i] + " at " + dateTime;
+                            Logger.GetComponent<Logger>().LogText(text, true);
                         }
                         //showing error code
                         else
                         {
                             string code = stockData[tickers[i]]["code"];
-                            textWindow.GetComponent<TMP_Text>().text += "no data for " + tickers[i] + " with error code: " + code + "\n";
+                            string error = stockData[tickers[i]]["message"];
+                            string text = "no data for " + tickers[i] + " with error " + code + ": " + error;
+                            Logger.GetComponent<Logger>().LogText(text, true);
                         }
                     }
                 }
@@ -61,7 +64,9 @@ public class CsvComposer : MonoBehaviour
         {
             //showing error code
             string code = stockData["code"];
-            textWindow.GetComponent<TMP_Text>().text += "failed with error code: " + code + "\n";
+            string error = stockData["message"];
+            string text = "failed with error code: " + code + " " + error;
+            Logger.GetComponent<Logger>().LogText(text, true);
         }
     }
 }
